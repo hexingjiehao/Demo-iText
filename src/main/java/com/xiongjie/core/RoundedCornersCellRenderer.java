@@ -1,4 +1,4 @@
-package com.xiongjie;
+package com.xiongjie.core;
 
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;

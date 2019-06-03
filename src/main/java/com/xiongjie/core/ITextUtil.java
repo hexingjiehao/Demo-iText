@@ -1,4 +1,4 @@
-package com.xiongjie;
+package com.xiongjie.core;
 
 import com.itextpdf.forms.PdfAcroForm;
 import com.itextpdf.forms.fields.PdfButtonFormField;
@@ -43,7 +43,7 @@ import java.util.StringTokenizer;
 public class ITextUtil {
 
     public static void main(String[] args) throws Exception {
-//        hello();
+        hello();
 //        font();
 //        list();
 //        image();
@@ -55,7 +55,7 @@ public class ITextUtil {
 //        event();
 //        annotation();
 //        linkAnnotation();
-        form();
+//        form();
     }
 
     /**
