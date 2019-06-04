@@ -44,8 +44,8 @@ public class ITextUtil {
 
     public static void main(String[] args) throws Exception {
         hello();
-//        font();
-//        list();
+        font();
+        list();
 //        image();
 //        table();
 //        axes();
