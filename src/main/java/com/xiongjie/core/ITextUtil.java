@@ -15,14 +15,9 @@ import com.itextpdf.kernel.font.PdfFont;
 import com.itextpdf.kernel.font.PdfFontFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.geom.Rectangle;
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfPage;
-import com.itextpdf.kernel.pdf.PdfString;
-import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.*;
 import com.itextpdf.kernel.pdf.action.PdfAction;
-import com.itextpdf.kernel.pdf.annot.PdfAnnotation;
-import com.itextpdf.kernel.pdf.annot.PdfLinkAnnotation;
-import com.itextpdf.kernel.pdf.annot.PdfTextAnnotation;
+import com.itextpdf.kernel.pdf.annot.*;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvas;
 import com.itextpdf.kernel.pdf.canvas.PdfCanvasConstants;
 import com.itextpdf.layout.ColumnDocumentRenderer;
@@ -45,24 +40,22 @@ public class ITextUtil {
     public static void main(String[] args) throws Exception {
         hello();
         font();
+        chinesefont();
         list();
-//        image();
-//        table();
-//        axes();
-//        textState();
-//        render();
-//        block();
-//        event();
-//        annotation();
-//        linkAnnotation();
-//        form();
+        image();
+        table();
+        axes();
+        textState();
+        render();
+        block();
+        event();
+        annotation();
+        linkAnnotation();
+        lineAnnotation();
+        markupAnnotation();
+        form();
     }
 
-    /**
-     * 创建pdf
-     *
-     * @throws Exception
-     */
     public static void hello() throws Exception {
         OutputStream fos = new FileOutputStream("hello.pdf");
         PdfWriter writer = new PdfWriter(fos);
@@ -72,18 +65,29 @@ public class ITextUtil {
         document.close();
     }
 
-    /**
-     * 不支持中文？？？
-     *
-     * @throws Exception
-     */
     public static void font() throws Exception {
         OutputStream fos = new FileOutputStream("font.pdf");
         PdfWriter writer = new PdfWriter(fos);
         PdfDocument pdf = new PdfDocument(writer);
         Document document = new Document(pdf);
         PdfFont font = PdfFontFactory.createFont(FontConstants.TIMES_ROMAN);
-        document.add(new Paragraph("iText的字体设置good").setFont(font));
+        document.add(new Paragraph("iText font set TIMES_ROMAN").setFont(font));
+        document.close();
+    }
+
+    public static void chinesefont() throws Exception {
+        OutputStream fos = new FileOutputStream("chinesefont.pdf");
+        PdfWriter writer = new PdfWriter(fos);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+
+//      //内嵌的中文字体
+        PdfFont font = PdfFontFactory.createFont("STSong-Light", "UniGB-UCS2-H",true);
+
+        //引入外部中文字体
+//        PdfFont font = PdfFontFactory.createFont("src/main/resources/font/SIMYOU.TTF", PdfEncodings.IDENTITY_H,false);
+
+        document.add(new Paragraph("这是中文").setFont(font));
         document.close();
     }
 
@@ -102,8 +106,6 @@ public class ITextUtil {
 
     /**
      * 图片的格式可能溢出
-     *
-     * @throws Exception
      */
     public static void image() throws Exception {
         OutputStream fos = new FileOutputStream("image.pdf");
@@ -112,6 +114,7 @@ public class ITextUtil {
         Document document = new Document(pdf);
 
         Image fox = new Image(ImageDataFactory.create("古剑奇谭壁纸.jpg"));
+        fox.setWidth(45);
         Paragraph p = new Paragraph("this is a iamge")
                 .add(fox);
         document.add(p);
@@ -120,8 +123,6 @@ public class ITextUtil {
 
     /**
      * 表格
-     *
-     * @throws Exception
      */
     public static void table() throws Exception {
         OutputStream fos = new FileOutputStream("table.pdf");
@@ -163,8 +164,6 @@ public class ITextUtil {
 
     /**
      * 画坐标轴和网格线，注意每次描绘，都重新设置画笔颜色
-     *
-     * @throws Exception
      */
     public static void axes() throws Exception {
         OutputStream fos = new FileOutputStream("axes.pdf");
@@ -239,8 +238,6 @@ public class ITextUtil {
 
     /**
      * 精细的文本描绘
-     *
-     * @throws Exception
      */
     public static void textState() throws Exception {
         OutputStream fos = new FileOutputStream("textState.pdf");
@@ -295,8 +292,6 @@ public class ITextUtil {
 
     /**
      * 文档渲染器
-     *
-     * @throws Exception
      */
     public static void render() throws Exception {
         OutputStream fos = new FileOutputStream("render.pdf");
@@ -321,6 +316,11 @@ public class ITextUtil {
         //添加内容
         Image inst = new Image(ImageDataFactory.create("古剑奇谭壁纸.jpg")).setWidth(columnWidth);
         String articleInstagram = new String(Files.readAllBytes(Paths.get("data.csv")), StandardCharsets.UTF_8);
+
+        for (int i=0;i<100;i++){
+            articleInstagram+="hellohellohellohello";
+        }
+
         addArticle(document,
                 "this is title",
                 "this is author", inst, articleInstagram);
@@ -424,14 +424,13 @@ public class ITextUtil {
         document.close();
     }
 
-    //文本注释这里有点问题
+
     public static void annotation() throws Exception {
         PdfDocument pdf = new PdfDocument(new PdfWriter("annotation.pdf"));
         Document document = new Document(pdf);
         document.add(new Paragraph("Hello World!"));
 
-        PdfAnnotation ann = new PdfTextAnnotation(new Rectangle(20, 800, 0, 0))
-                .setOpen(true)
+        PdfAnnotation ann = new PdfTextAnnotation(new Rectangle(120, 800, 0, 0))
                 .setColor(ColorConstants.GREEN)
                 .setTitle(new PdfString("iText"))
                 .setContents("With iText,you can truly take your documentation needs to the next level.");
@@ -451,6 +450,46 @@ public class ITextUtil {
                 .add(" to learn more...");
         document.add(p);
         document.close();
+    }
+
+    public static void lineAnnotation() throws Exception {
+        OutputStream fos = new FileOutputStream("lineAnnotation.pdf");
+        PdfWriter writer = new PdfWriter(fos);
+        PdfDocument pdf = new PdfDocument(writer);
+
+        PdfPage page = pdf.addNewPage();
+        PdfArray lineEndings = new PdfArray();
+        lineEndings.add(new PdfName("Diamond"));
+        lineEndings.add(new PdfName("Diamond"));
+        PdfAnnotation annotation = new PdfLineAnnotation(
+                new Rectangle(0, 0),
+                new float[]{20, 790, page.getPageSize().getWidth() - 20, 790})
+                    .setLineEndingStyles((lineEndings))
+                    .setContentsAsCaption(true)
+                    .setTitle(new PdfString("iText"))
+                    .setContents("The example of line annotation")
+                    .setColor(ColorConstants.BLUE);
+         page.addAnnotation(annotation);
+         pdf.close();
+    }
+
+    public static void markupAnnotation() throws Exception {
+        OutputStream fos = new FileOutputStream("markupAnnotation.pdf");
+        PdfWriter writer = new PdfWriter(fos);
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf);
+        document.add(new Paragraph("Hello World!"));
+
+        PdfAnnotation ann = PdfTextMarkupAnnotation.createHighLight(
+                 new Rectangle(105, 790, 64, 10),
+                 new float[]{169, 790, 105, 790, 169, 800, 105, 800})
+                     .setColor(ColorConstants.YELLOW)
+                     .setTitle(new PdfString("Hello!"))
+                     .setContents(new PdfString("I'm a popup."))
+                     .setTitle(new PdfString("iText"))
+                     .setRectangle(new PdfArray(new float[]{100, 600, 200, 100}));
+        pdf.getFirstPage().addAnnotation(ann);
+        pdf.close();
     }
 
     public static void form() throws Exception {
